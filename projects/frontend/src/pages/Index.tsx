@@ -9,6 +9,31 @@ import BountyDetailModal from "@/components/bounty/BountyDetailModal";
 import CreateBountyModal from "@/components/bounty/CreateBountyModal";
 import WalletModal from "@/components/bounty/WalletModal";
 import { Github, Twitter, MessageCircle } from "lucide-react";
+import { getBounties, StoredBounty } from "@/utils/bountyStorage";
+
+/** Map a localStorage StoredBounty to the UI Bounty interface */
+function storedToUiBounty(sb: StoredBounty): Bounty {
+  const statusMap: Record<string, Bounty["status"]> = {
+    active: "Open",
+    claimed: "In Progress",
+    completed: "Completed",
+  };
+  return {
+    id: `chain-${sb.appId}`,
+    title: sb.title,
+    description: sb.description,
+    reward: `${sb.reward} ALGO`,
+    category: sb.category,
+    difficulty: (sb.difficulty as Bounty["difficulty"]) || "Medium",
+    deadline: new Date(sb.createdAt + 30 * 24 * 60 * 60 * 1000).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }),
+    creator: sb.creator.slice(0, 6) + "..." + sb.creator.slice(-4),
+    status: statusMap[sb.status] ?? "Open",
+  };
+}
 
 /* ── Wave SVG divider component ── */
 const WaveDivider = ({ flip = false, color = "rgba(124,58,237,0.06)" }: { flip?: boolean; color?: string }) => (
@@ -32,7 +57,18 @@ const Index = () => {
   const [createOpen, setCreateOpen] = useState(false);
   const [walletModalOpen, setWalletModalOpen] = useState(false);
   const [cursorPos, setCursorPos] = useState({ x: -500, y: -500 });
+  const [createdBounties, setCreatedBounties] = useState<Bounty[]>([]);
   const bountiesRef = useRef<HTMLDivElement>(null);
+
+  /** Load user-created bounties from localStorage */
+  const loadCreatedBounties = useCallback(() => {
+    const stored = getBounties();
+    setCreatedBounties(stored.map(storedToUiBounty));
+  }, []);
+
+  useEffect(() => {
+    loadCreatedBounties();
+  }, [loadCreatedBounties]);
 
   const scrollToBounties = () => {
     bountiesRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -187,11 +223,11 @@ const Index = () => {
         <WaveDivider flip color="rgba(59,130,246,0.05)" />
 
         <div ref={bountiesRef}>
-          <BountyList onBountyClick={setSelectedBounty} />
+          <BountyList onBountyClick={setSelectedBounty} extraBounties={createdBounties} />
         </div>
 
         <BountyDetailModal bounty={selectedBounty} onClose={() => setSelectedBounty(null)} />
-        <CreateBountyModal open={createOpen} onClose={() => setCreateOpen(false)} />
+        <CreateBountyModal open={createOpen} onClose={() => setCreateOpen(false)} onBountyCreated={loadCreatedBounties} />
         <WalletModal open={walletModalOpen} onClose={() => setWalletModalOpen(false)} />
 
         <WaveDivider color="rgba(139,92,246,0.04)" />

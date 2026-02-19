@@ -5,15 +5,19 @@ import BountyCard from "./BountyCard";
 
 interface BountyListProps {
   onBountyClick: (bounty: Bounty) => void;
+  /** User-created bounties loaded from localStorage */
+  extraBounties?: Bounty[];
 }
 
-const BountyList = ({ onBountyClick }: BountyListProps) => {
+const BountyList = ({ onBountyClick, extraBounties = [] }: BountyListProps) => {
   const [activeCategory, setActiveCategory] = useState("All");
+
+  const allBounties = [...extraBounties, ...MOCK_BOUNTIES];
 
   const filtered =
     activeCategory === "All"
-      ? MOCK_BOUNTIES
-      : MOCK_BOUNTIES.filter((b) => b.category === activeCategory);
+      ? allBounties
+      : allBounties.filter((b) => b.category === activeCategory);
 
   return (
     <section id="bounties" className="py-20">
