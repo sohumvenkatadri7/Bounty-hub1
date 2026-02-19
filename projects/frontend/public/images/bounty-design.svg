@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <defs>
+    <linearGradient id="d1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c4b5fd"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+    <linearGradient id="d2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ddd6fe"/>
+      <stop offset="100%" stop-color="#c4b5fd"/>
+    </linearGradient>
+  </defs>
+  <ellipse cx="200" cy="150" rx="110" ry="95" fill="url(#d1)" opacity="0.6"/>
+  <ellipse cx="175" cy="135" rx="65" ry="75" fill="url(#d2)" opacity="0.5"/>
+  <circle cx="240" cy="175" r="42" fill="#ede9fe" opacity="0.5"/>
+  <rect x="260" y="70" width="55" height="55" rx="14" fill="#ddd6fe" opacity="0.45" transform="rotate(20 287 97)"/>
+</svg>
