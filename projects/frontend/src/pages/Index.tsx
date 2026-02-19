@@ -32,6 +32,8 @@ function storedToUiBounty(sb: StoredBounty): Bounty {
     }),
     creator: sb.creator.slice(0, 6) + "..." + sb.creator.slice(-4),
     status: statusMap[sb.status] ?? "Open",
+    appId: sb.appId,
+    creatorAddress: sb.creator,
   };
 }
 

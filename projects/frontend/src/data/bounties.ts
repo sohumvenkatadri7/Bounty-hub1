@@ -24,6 +24,9 @@ export interface Bounty {
   comments?: number;
   details?: string;
   requirements?: string[];
+  appId?: number;
+  /** Full wallet address of the bounty creator (for ownership comparison) */
+  creatorAddress?: string;
 }
 export const MOCK_BOUNTIES: Bounty[] = [
   {
