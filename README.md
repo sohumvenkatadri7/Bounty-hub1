@@ -475,23 +475,25 @@ Uses official Algorand toolkit:
 | **Ownership** | User controls their keys, not platform |
 
 
----
 
 ## �📸 Screenshots
 
 ### Home Page
-![Home Page](./projects/frontend/public/screenshots/home.png)
+<img width="1440" height="792" alt="Screenshot 2026-02-20 at 7 10 42 AM" src="https://github.com/user-attachments/assets/f548aab2-6498-4de5-a5fe-46a14772f24b" />
+
 
 ### Create Bounty Modal
-![Create Bounty](./projects/frontend/public/screenshots/create-bounty.png)
+<img width="1291" height="699" alt="Screenshot 2026-02-20 at 7 10 58 AM" src="https://github.com/user-attachments/assets/1a3291b3-d4d8-4dc1-9d45-cdc834afa10f" />
+
 
 ### All Bounties View
-![All Bounties](./projects/frontend/public/screenshots/all-bounties.png)
+<img width="1440" height="792" alt="Screenshot 2026-02-20 at 7 11 16 AM" src="https://github.com/user-attachments/assets/40385396-7d11-4c1a-816a-68995a912840" />
 
-### My Bounties View
-![My Bounties](./projects/frontend/public/screenshots/my-bounties.png)
 
----
+### APP_ID on Explorer
+<img width="1440" height="792" alt="Screenshot 2026-02-20 at 7 13 25 AM" src="https://github.com/user-attachments/assets/ea6ea0cc-8ab1-4340-b3ce-84577c26c06a" />
+
+
 
 
 ## 🚀 Deployment
