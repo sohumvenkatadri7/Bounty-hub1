@@ -55,9 +55,12 @@ An Algorand **smart contract–powered bounty escrow system** that:
 ### 🌐 Live Frontend
 **Your Live URL:** [Update with your Vercel/hosted URL](https://your-live-demo-url.com)
 
-### 🎥 Demo Video
- 
+### 🎥 Demo Video 
 [Update with your LinkedIn video URL](https://linkedin.com/your-demo-video-link)
+
+### 🎥 Demo Video (LinkedIn) 
+[Update with your LinkedIn video URL](https://linkedin.com/your-demo-video-link)
+
 
 
 ### 🧾 Smart Contract (Testnet)
@@ -147,44 +150,9 @@ Built using:
 
 #### User Flow
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     User Actions                            │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  Creator Path                      Worker Path             │
-│  ═══════════                        ════════════            │
-│  1. Connect Wallet                 1. Connect Wallet      │
-│  2. Post Bounty                    2. Opt-in to App      │
-│  3. Send funds to App              3. Submit Work        │
-│  4. Approve Submission             4. Wait for Approval  │
-│  5. Smart Contract releases $      5. Receive Payment    │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-                            │
-                            ↓
-            ┌──────────────────────────────┐
-            │  Algorand Testnet            │
-            │  Smart Contract (755780805)  │
-            │                              │
-            │  • Validates conditions      │
-            │  • Manages escrow funds      │
-            │  • Executes atomic releases  │
-            │                              │
-            └──────────────────────────────┘
-│  │  ┌────────────────────────────────────────────┐    │   │
-│  │  │  Bounty App Contract                       │    │   │
-│  │  │  • create_bounty(amount)                   │    │   │
-│  │  │  • claim_bounty()                          │    │   │
-│  │  │  • submit_work()                           │    │   │
-│  │  │  • approve_bounty()                        │    │   │
-│  │  └────────────────────────────────────────────┘    │   │
-│  │                                                      │   │
-│  └──────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────┘
+<img width="425" height="467" alt="Screenshot 2026-02-20 at 6 59 45 AM" src="https://github.com/user-attachments/assets/130b3167-dbe7-421d-973a-4b44b90a6d4c" />
 
 
-```
 
 ### Transaction Flow
 
@@ -430,6 +398,7 @@ When Creator approves:
 ✅ Transaction visible on Testnet (App ID: 755780805)
 ```
 
+
 ### 🔍 Verifying on Blockchain
 
 ```
@@ -446,7 +415,6 @@ When Creator approves:
    ✅ Payment transferred on approval
    ✅ All transactions grouped atomically
 ```
-
 ---
 
 ## � Why This Project Meaningfully Uses Algorand
@@ -496,7 +464,6 @@ Uses official Algorand toolkit:
 ✅ Production deployment
 ```
 
-### Not Just Payments
 
 | Aspect | Why Algorand Matters |
 |--------|---------------------|
@@ -508,12 +475,23 @@ Uses official Algorand toolkit:
 | **Ownership** | User controls their keys, not platform |
 
 
+---
 
-```typescript
-const ALGOD_SERVER = "https://testnet-api.algonode.cloud";
-const ALGOD_TOKEN = "";
-const NETWORK = "testnet";
-```
+## �📸 Screenshots
+
+### Home Page
+![Home Page](./projects/frontend/public/screenshots/home.png)
+
+### Create Bounty Modal
+![Create Bounty](./projects/frontend/public/screenshots/create-bounty.png)
+
+### All Bounties View
+![All Bounties](./projects/frontend/public/screenshots/all-bounties.png)
+
+### My Bounties View
+![My Bounties](./projects/frontend/public/screenshots/my-bounties.png)
+
+---
 
 
 ## 🚀 Deployment
