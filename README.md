@@ -1,5 +1,8 @@
 # BountyHub - Decentralized Bounty Management Platform
 
+[![Live Demo Website](https://img.shields.io/badge/🚀_Live_Demo_Website-3b82f6?style=for-the-badge)](https://bounty-hub-three.vercel.app)
+[![Video Demo](https://img.shields.io/badge/🌐_Video_Demo-10b981?style=for-the-badge)](https://drive.google.com/file/d/1mYLZvda3funTpglnUib1QjDsQNsuykFs/view?usp=drive_link)
+
 A **decentralized bounty management platform** built on the Algorand Testnet using AlgoKit.
 
 It solves trust issues in freelance and hackathon-style bounty systems by introducing:
@@ -53,13 +56,13 @@ An Algorand **smart contract–powered bounty escrow system** that:
 ## � Live Links & Deployment
 
 ### 🌐 Live Frontend
-**Your Live URL:** [Update with your Vercel/hosted URL](https://your-live-demo-url.com)
+**Your Live URL:** [Vercel URL](https://bounty-hub-three.vercel.app/)
 
 ### 🎥 Demo Video 
-[Update with your LinkedIn video URL](https://linkedin.com/your-demo-video-link)
+[Demo video URL](https://drive.google.com/file/d/1mYLZvda3funTpglnUib1QjDsQNsuykFs/view?usp=drive_link)
 
 ### 🎥 Demo Video (LinkedIn) 
-[Update with your LinkedIn video URL](https://linkedin.com/your-demo-video-link)
+[LinkedIn video URL](https://www.linkedin.com/posts/sohum-venkatadri-73aa8234b_algorand-algokit-blockchain-ugcPost-7430439403375964160-Sq1G/?utm_source=share&utm_medium=member_android&rcm=ACoAAFeLwZ4B0zh0FUHMnJoBy28zuwA5kY56Uzc)
 
 
 
@@ -503,7 +506,7 @@ Uses official Algorand toolkit:
 1. **Smart Contract Deployment:**
    ```bash
    cd projects/contracts
-   # Deploy to Mainnet (after audit)
+   # Deploy
    poetry run algokit deploy mainnet
    ```
 
