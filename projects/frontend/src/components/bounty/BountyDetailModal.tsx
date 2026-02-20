@@ -23,6 +23,11 @@ import {
   addSubmission,
   approveSubmission,
 } from "@/utils/submissionStorage";
+import {
+  callClaimMethod,
+  callSubmitWorkMethod,
+  callApproveMethod,
+} from "@/utils/bountyService";
 
 interface BountyDetailModalProps {
   bounty: Bounty | null;
@@ -122,7 +127,7 @@ function RichText({ text }: { text: string }) {
 const BountyDetailModal = ({ bounty, onClose }: BountyDetailModalProps) => {
   if (!bounty) return null;
 
-  const { activeAddress } = useWallet();
+  const { activeAddress, transactionSigner } = useWallet();
   const diff = difficultyConfig[bounty.difficulty];
   const remaining = useCountdown(bounty.deadline);
   const prizes = bounty.prizes || [];
@@ -142,6 +147,9 @@ const BountyDetailModal = ({ bounty, onClose }: BountyDetailModalProps) => {
   const [submitting, setSubmitting] = useState(false);
   const [showSubmitInput, setShowSubmitInput] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [claimError, setClaimError] = useState<string | null>(null);
+  const [claiming, setClaiming] = useState(false);
 
   // Load submissions whenever bounty changes
   useEffect(() => {
@@ -150,20 +158,78 @@ const BountyDetailModal = ({ bounty, onClose }: BountyDetailModalProps) => {
     }
   }, [bounty]);
 
-  const handleSubmit = () => {
-    if (!submitText.trim() || !activeAddress) return;
-    setSubmitting(true);
-    addSubmission(bounty.id, activeAddress, submitText.trim());
-    setResponses(getSubmissionsForBounty(bounty.id));
-    setSubmitText("");
-    setSubmitting(false);
-    setShowSubmitInput(false);
-    setSubmitSuccess(true);
+  const handleSubmit = async () => {
+    await handleSubmitWork();
+  };
+
+  const handleClaimWork = async () => {
+    if (!bounty?.appId || !activeAddress || !transactionSigner) {
+      setClaimError("Wallet not connected or contract not found.");
+      return;
+    }
+    setClaiming(true);
+    setClaimError(null);
+    try {
+      console.log("Claiming work on-chain", { appId: bounty.appId, sender: activeAddress });
+      await callClaimMethod(bounty.appId, activeAddress, transactionSigner);
+      console.log("Claim work transaction sent");
+    } catch (err: any) {
+      setClaimError(err?.message || "Failed to claim work. See console for details.");
+      console.error("Claim work error:", err);
+    } finally {
+      setClaiming(false);
+    }
   };
 
   const handleApprove = (subId: string) => {
     approveSubmission(subId);
     setResponses(getSubmissionsForBounty(bounty.id));
+  };
+
+  const handleSubmitWork = async () => {
+    if (!bounty?.appId || !activeAddress || !transactionSigner) {
+      setSubmitError("Wallet not connected or contract not found.");
+      return;
+    }
+    setSubmitting(true);
+    setSubmitError(null);
+    try {
+      console.log("Submitting work on-chain", { appId: bounty.appId, sender: activeAddress });
+      await callSubmitWorkMethod(bounty.appId, activeAddress, transactionSigner);
+      console.log("Submit work transaction sent");
+      setSubmitSuccess(true);
+      setShowSubmitInput(false);
+      setSubmitText("");
+      addSubmission(bounty.id, activeAddress, submitText.trim());
+      setResponses(getSubmissionsForBounty(bounty.id));
+    } catch (err: any) {
+      let errorMsg = err?.message || err?.toString() || "Failed to submit work. See console for details.";
+      setSubmitError(errorMsg);
+      alert("Submit Response Error: " + errorMsg);
+      console.error("Submit work error:", err);
+      setSubmitSuccess(false);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleApproveWork = async (subId: string) => {
+    if (!bounty?.appId || !activeAddress || !transactionSigner) return;
+    // Find worker address from responses
+    const workerAddress = responses.find(r => r.id === subId)?.submitter;
+    if (!workerAddress) {
+      alert("Worker address not found for approval.");
+      return;
+    }
+    try {
+      const txId = await callApproveMethod(bounty.appId, activeAddress, transactionSigner, workerAddress);
+      alert(`Approve transaction sent!\nApp ID: ${bounty.appId}\nTx ID: ${txId}`);
+      console.log(`Approve transaction sent! App ID: ${bounty.appId}, Tx ID: ${txId}`);
+    } catch (err) {
+      alert(`Approve failed: ${err?.message || err}`);
+      console.error("Approve failed:", err);
+    }
+    handleApprove(subId);
   };
 
   return (
@@ -305,18 +371,23 @@ const BountyDetailModal = ({ bounty, onClose }: BountyDetailModalProps) => {
               {/* Action buttons — conditional on role */}
               {!isOwner && (
                 <div className="space-y-3">
+                  {claimError && (
+                    <div className="text-red-600 text-xs font-semibold text-center mb-2">{claimError}</div>
+                  )}
                   <Button
                     variant="outline"
                     className="w-full border-emerald-400/40 text-emerald-600 hover:bg-emerald-500/10 hover:text-emerald-500 font-semibold h-12 text-[15px]"
+                    onClick={handleClaimWork}
+                    disabled={claiming}
                   >
-                    Claim Work
+                    {claiming ? "Claiming..." : "Claim Work"}
                     <Trophy className="ml-2 h-4 w-4" />
                   </Button>
                   {/* Only show Submit Now if user hasn't submitted yet */}
                   {activeAddress && !responses.some((s) => s.submitter === activeAddress) && !submitSuccess && (
                     <Button
                       className="w-full gradient-primary text-primary-foreground font-semibold glow-primary h-12 text-[15px]"
-                      onClick={() => setShowSubmitInput((v) => !v)}
+                      onClick={() => { setShowSubmitInput((v) => !v); }}
                     >
                       Submit Now
                       <ArrowUpRight className="ml-2 h-4 w-4" />
@@ -333,16 +404,7 @@ const BountyDetailModal = ({ bounty, onClose }: BountyDetailModalProps) => {
                         className="w-full rounded-xl border border-border bg-white/60 px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none mb-2"
                       />
                       <Button
-                        onClick={() => {
-                          if (!submitText.trim() || submitting || !activeAddress) return;
-                          setSubmitting(true);
-                          addSubmission(bounty.id, activeAddress, submitText.trim());
-                          setResponses(getSubmissionsForBounty(bounty.id));
-                          setSubmitText("");
-                          setSubmitting(false);
-                          setShowSubmitInput(false);
-                          setSubmitSuccess(true);
-                        }}
+                        onClick={handleSubmitWork}
                         disabled={!submitText.trim() || submitting}
                         className="w-full gradient-primary text-primary-foreground font-semibold glow-primary h-10 text-sm"
                       >
@@ -489,7 +551,7 @@ const BountyDetailModal = ({ bounty, onClose }: BountyDetailModalProps) => {
                               ) : (
                                 <Button
                                   size="sm"
-                                  onClick={() => handleApprove(sub.id)}
+                                  onClick={async () => { await handleApproveWork(sub.id); }}
                                   className="bg-emerald-500 hover:bg-emerald-600 text-white text-xs h-8 px-3"
                                 >
                                   <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
@@ -520,7 +582,7 @@ const BountyDetailModal = ({ bounty, onClose }: BountyDetailModalProps) => {
                     className="w-full rounded-xl border border-border bg-white/60 px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
                   />
                   <Button
-                    onClick={handleSubmit}
+                    onClick={handleSubmitWork}
                     disabled={!submitText.trim() || submitting}
                     className="mt-3 gradient-primary text-primary-foreground font-semibold glow-primary h-10 px-6 text-sm"
                   >

@@ -104,25 +104,24 @@ export async function createBountyWithWallet(
     const appAddress = algosdk.getApplicationAddress(createdAppId);
     console.log(`✅ App Created! ID: ${createdAppId}, Address: ${appAddress}`);
 
-    // Now fund the app with min balance
-    console.log(`📍 Step 8: Funding app with min balance...`);
-    const minBalanceAmount = 100_000; // 0.1 ALGO
+    // Fund the app with both minimum balance and reward amount
+    console.log(`📍 Step 8: Funding app with min balance and reward amount...`);
+    const minBalanceAmount = 100_000; // 0.1 ALGO in microAlgos
+    const rewardAmount = Math.floor(amount * 1_000_000); // Convert ALGO to microAlgos
+    const totalFund = minBalanceAmount + rewardAmount;
     const freshParams = await algod.getTransactionParams().do();
     const fundTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
       sender: creatorAddress,
       receiver: appAddress,
-      amount: minBalanceAmount,
+      amount: totalFund,
       suggestedParams: freshParams,
     });
-
     algosdk.assignGroupID([fundTxn]);
     const fundSigned = await transactionSigner([fundTxn], [0]);
-
     const fundResponse = await algod.sendRawTransaction(fundSigned[0]).do();
     const fundTxId = fundResponse.txid; // lowercase txid
-
     await algosdk.waitForConfirmation(algod, fundTxId, 4);
-    console.log(`✅ App funded with min balance!`);
+    console.log(`✅ App funded with total: ${(totalFund / 1_000_000).toFixed(2)} ALGO!`);
 
     return {
       appId: Number(createdAppId),
@@ -178,4 +177,102 @@ export async function callCreateBountyMethod(
     console.error("❌ Error calling create_bounty:", error);
     throw error;
   }
+}
+
+/**
+ * Call the claim method on the bounty contract
+ */
+export async function callClaimMethod(
+  appId: number,
+  sender: string,
+  transactionSigner: (
+    txnGroup: algosdk.Transaction[],
+    indexesToSign: number[]
+  ) => Promise<Uint8Array[]>
+): Promise<string> {
+  const algod = new algosdk.Algodv2(ALGOD_TOKEN, ALGOD_SERVER, "");
+  let suggestedParams = await algod.getTransactionParams().do();
+  suggestedParams.flatFee = true;
+  suggestedParams.fee = suggestedParams.fee > 2000 ? suggestedParams.fee : 2000;
+  const appCallTxn = algosdk.makeApplicationNoOpTxnFromObject({
+    sender,
+    appIndex: appId,
+    appArgs: [new TextEncoder().encode("claim")],
+    suggestedParams,
+  });
+  algosdk.assignGroupID([appCallTxn]);
+  const signedTxns = await transactionSigner([appCallTxn], [0]);
+  console.log("Sending claim transaction for appId:", appId);
+  const response = await algod.sendRawTransaction(signedTxns[0]).do();
+  console.log("Claim response:", response);
+  const txId = response.txid;
+  const confirmation = await algosdk.waitForConfirmation(algod, txId, 4);
+  console.log("Claim confirmed:", confirmation);
+  return txId;
+}
+
+/**
+ * Call the submit_work method on the bounty contract
+ */
+export async function callSubmitWorkMethod(
+  appId: number,
+  sender: string,
+  transactionSigner: (
+    txnGroup: algosdk.Transaction[],
+    indexesToSign: number[]
+  ) => Promise<Uint8Array[]>
+): Promise<string> {
+  const algod = new algosdk.Algodv2(ALGOD_TOKEN, ALGOD_SERVER, "");
+  let suggestedParams = await algod.getTransactionParams().do();
+  suggestedParams.flatFee = true;
+  suggestedParams.fee = suggestedParams.fee > 2000 ? suggestedParams.fee : 2000;
+  const appCallTxn = algosdk.makeApplicationNoOpTxnFromObject({
+    sender,
+    appIndex: appId,
+    appArgs: [new TextEncoder().encode("submit_work")],
+    suggestedParams,
+  });
+  algosdk.assignGroupID([appCallTxn]);
+  const signedTxns = await transactionSigner([appCallTxn], [0]);
+  console.log("Sending submit_work transaction for appId:", appId);
+  const response = await algod.sendRawTransaction(signedTxns[0]).do();
+  console.log("Submit response:", response);
+  const txId = response.txid;
+  const confirmation = await algosdk.waitForConfirmation(algod, txId, 4);
+  console.log("Submit confirmed:", confirmation);
+  return txId;
+}
+
+/**
+ * Call the approve method on the bounty contract
+ */
+export async function callApproveMethod(
+  appId: number,
+  sender: string,
+  transactionSigner: (
+    txnGroup: algosdk.Transaction[],
+    indexesToSign: number[]
+  ) => Promise<Uint8Array[]>,
+  workerAddress: string
+): Promise<string> {
+  const algod = new algosdk.Algodv2(ALGOD_TOKEN, ALGOD_SERVER, "");
+  let suggestedParams = await algod.getTransactionParams().do();
+  suggestedParams.flatFee = true;
+  suggestedParams.fee = suggestedParams.fee > 2000 ? suggestedParams.fee : 2000;
+  const appCallTxn = algosdk.makeApplicationNoOpTxnFromObject({
+    sender,
+    appIndex: appId,
+    appArgs: [new TextEncoder().encode("approve")],
+    accounts: [workerAddress],
+    suggestedParams,
+  });
+  algosdk.assignGroupID([appCallTxn]);
+  const signedTxns = await transactionSigner([appCallTxn], [0]);
+  console.log("Sending approve transaction for appId:", appId);
+  const response = await algod.sendRawTransaction(signedTxns[0]).do();
+  console.log("Approve response:", response);
+  const txId = response.txid;
+  const confirmation = await algosdk.waitForConfirmation(algod, txId, 4);
+  console.log("Approve confirmed:", confirmation);
+  return txId;
 }
