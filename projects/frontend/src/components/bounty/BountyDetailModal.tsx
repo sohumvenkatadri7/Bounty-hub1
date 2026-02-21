@@ -37,7 +37,7 @@ interface BountyDetailModalProps {
 const difficultyConfig: Record<string, { bg: string; text: string; dot: string }> = {
   Easy: { bg: "bg-emerald-500/10", text: "text-emerald-400", dot: "bg-emerald-400" },
   Medium: { bg: "bg-amber-500/10", text: "text-amber-400", dot: "bg-amber-400" },
-  Hard: { bg: "bg-rose-500/10", text: "text-rose-400", dot: "bg-rose-400" },
+  Hard: { bg: "bg-blue-500/10", text: "text-blue-400", dot: "bg-blue-400" },
 };
 
 const placeColors: Record<string, string> = {
@@ -800,7 +800,7 @@ const BountyDetailModal = ({ bounty, onClose }: BountyDetailModalProps) => {
                                     sub.status === "approved"
                                       ? "text-emerald-600"
                                       : sub.status === "rejected"
-                                        ? "text-rose-500"
+                                        ? "text-blue-500"
                                         : "text-amber-500"
                                   }`}
                                 >

@@ -34,7 +34,7 @@ const Home: React.FC<HomeProps> = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-tr from-teal-400 via-cyan-300 to-sky-400 relative">
+    <div className="min-h-screen bg-gradient-to-tr from-blue-100 via-green-50 to-yellow-50 relative">
       {/* Top-right wallet connect button */}
       <div className="absolute top-4 right-4 z-10 flex gap-3">
         <button
@@ -77,7 +77,7 @@ const Home: React.FC<HomeProps> = () => {
                 </div>
               </div>
 
-              <div className="card bg-gradient-to-br from-fuchsia-500 to-pink-500 text-white shadow-xl">
+              <div className="card bg-gradient-to-br from-blue-500 to-teal-400 text-white shadow-xl">
                 <div className="card-body">
                   <h2 className="card-title">Mint NFT (ARC-3)</h2>
                   <p>Upload to IPFS via Pinata and mint a single NFT.</p>
@@ -124,7 +124,7 @@ const Home: React.FC<HomeProps> = () => {
                 </div>
               </div>
 
-              <div className="card bg-gradient-to-br from-rose-500 to-red-500 text-white shadow-xl md:col-span-2 lg:col-span-1">
+              <div className="card bg-gradient-to-br from-cyan-500 to-blue-500 text-white shadow-xl md:col-span-2 lg:col-span-1">
                 <div className="card-body">
                   <h2 className="card-title">Bank</h2>
                   <p>Deposit and withdraw ALGOs and view statements.</p>

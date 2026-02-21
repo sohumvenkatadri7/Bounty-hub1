@@ -60,13 +60,12 @@
     min-height: 100vh;
     /* Pastel gradient background like the reference image */
     background: linear-gradient(135deg,
-      #fce7f3 0%,          /* pink-100 */
-      #f3e8ff 20%,         /* purple-100 */
-      #ede9fe 35%,         /* violet-100 */
-      #e0e7ff 50%,         /* indigo-100 */
-      #dbeafe 65%,         /* blue-100 */
-      #e0f2fe 80%,         /* sky-100 */
-      #f0fdf4 100%         /* green-50 */
+      #e0e7ff 0%,          /* indigo-100 */
+      #dbeafe 20%,         /* blue-100 */
+      #e0f2fe 40%,         /* sky-100 */
+      #f0fdf4 60%,         /* green-50 */
+      #bbf7d0 80%,         /* green-200 */
+      #fef9c3 100%         /* yellow-100 */
     );
     background-attachment: fixed;
   }

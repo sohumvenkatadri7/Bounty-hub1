@@ -9,12 +9,12 @@ interface BountyCardProps {
 }
 
 const palettes = [
-  { bg: "from-rose-50 to-pink-50", accent: "text-rose-500", dot: "bg-rose-400" },
+  { bg: "from-blue-50 to-cyan-50", accent: "text-blue-500", dot: "bg-blue-400" },
   { bg: "from-emerald-50 to-green-50", accent: "text-emerald-500", dot: "bg-emerald-400" },
   { bg: "from-violet-50 to-purple-50", accent: "text-violet-500", dot: "bg-violet-400" },
   { bg: "from-amber-50 to-orange-50", accent: "text-amber-500", dot: "bg-amber-400" },
   { bg: "from-sky-50 to-cyan-50", accent: "text-sky-500", dot: "bg-sky-400" },
-  { bg: "from-fuchsia-50 to-pink-50", accent: "text-fuchsia-500", dot: "bg-fuchsia-400" },
+  { bg: "from-teal-50 to-green-50", accent: "text-teal-500", dot: "bg-teal-400" },
 ];
 
 const BountyCard = ({ bounty, onClick, index = 0 }: BountyCardProps) => {
